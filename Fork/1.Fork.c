@@ -20,7 +20,6 @@ typedef struct {
 
 int main() {
     // 1. Creation memoire partagee
-    // CORRECTION : Ajout du point-virgule à la fin de mmap
     Memoire_partagee* partagee = mmap(NULL, sizeof(Memoire_partagee), 
                                       PROT_READ | PROT_WRITE, 
                                       MAP_SHARED | MAP_ANONYMOUS, -1, 0); 
@@ -34,7 +33,6 @@ int main() {
     partagee->i = 0;
     partagee->j = 0;
 
-    // CORRECTION : Suppression des parenthèses en trop 
     sem_init(&partagee->places_libres, 1, N);   // N places libres
     sem_init(&partagee->items_existants, 1, 0); // 0 items existants
     sem_init(&partagee->mutex, 1, 1);           // 1 clé (Mutex)
@@ -81,9 +79,9 @@ int main() {
             sem_wait(&partagee->mutex);
 
             partagee->tab[partagee->i] = item;
-            printf("-> Pere : ecrit %d\n", item); // Ajout d'un print
+            printf("-> Pere : ecrit %d\n", item); 
             
-            // CORRECTION : "i ++=" n'existe pas. On utilise une affectation simple.
+            
             partagee->i = (partagee->i + 1) % N; 
 
             sem_post(&partagee->mutex);
@@ -102,7 +100,8 @@ int main() {
         sem_destroy(&partagee->items_existants);
         sem_destroy(&partagee->mutex);
         munmap(partagee, sizeof(Memoire_partagee));
-    } // CORRECTION : Suppression de l'accolade en trop qui trainait ici
+    } 
 
     return 0;
+
 }
